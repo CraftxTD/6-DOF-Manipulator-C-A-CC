@@ -20,7 +20,7 @@ local z = 0 + geometry.DOCK_Z
 local dock_to_pivot = 6
 
 for _, name in ipairs(peripheral.getNames()) do
-	print(string.format("Found peripheral %a to the %b..", peripheral.getType(name), name))
+	print(string.format("Found peripheral %s to the %s..", peripheral.getType(name), name))
 end
 
 -- For checking if in docking mode

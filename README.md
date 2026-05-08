@@ -3,4 +3,4 @@ This is a project that implements a 3 DOF Manipulator in Minecraft using Create 
 
 To download, copy the following commands into your computer terminal: 
 
-pastebin run 02R6eiHr
+pastebin run 16h8zx3D

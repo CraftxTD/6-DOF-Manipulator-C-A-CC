@@ -11,9 +11,11 @@ local base = "https://raw.githubusercontent.com/CraftxTD/3-DOF-Manipulator-C-A-C
 for dir, files in pairs(directories) do
 	fs.makeDir(dir)
 	for _, file in pairs(files) do
+		shell.run("rm", dir .. "/" .. file)
+
 		print("Downloading " .. file)
 
-		shell.run("wget -f", base .. dir .. "/" .. file, dir .. "/" .. file)
+		shell.run("wget", base .. dir .. "/" .. file, dir .. "/" .. file)
 	end
 end
 

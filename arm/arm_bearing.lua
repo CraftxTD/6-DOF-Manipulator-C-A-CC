@@ -17,7 +17,7 @@ local modem = peripheral.find("modem") or error("No modem", 0)
 modem.open(localChannel)
 
 for _, name in ipairs(peripheral.getNames()) do
-	print(string.format("Found peripheral %a to the %b..", peripheral.getType(name), name))
+	print(string.format("Found peripheral %s to the %s..", peripheral.getType(name), name))
 end
 
 local gearshift = peripheral.wrap("right")
