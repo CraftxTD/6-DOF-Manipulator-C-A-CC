@@ -15,18 +15,18 @@ local event, a, channel, message
 -- FIX: Focus only on one ship at a time
 
 while true do
-	network.poll(channels.SHIP_DOCK, 1)
+	message = network.poll(channels.SHIP_DOCK, 1)
 
 	print("Found ship.. ")
 	local data = calculate.angles(message)
 
 	-- Waits until the ring bearing has moved
 	modem.transmit(channels.LIMB_RING_BEARING, channels.CONTROLLER, data.center_pivot)
-	poll(channels.CONTROLLER, 1)
+	network.poll(channels.CONTROLLER, 1)
 
 	-- Waits until limb 1 has moved
 	modem.transmit(channels.LIMB_1, channels.CONTROLLER, data.limb1_angle)
-	poll(channels.CONTROLLER, 1)
+	network.poll(channels.CONTROLLER, 1)
 
 	-- Waits until limb 2 has moved
 	modem.transmit(channels.LIMB_2, channels.CONTROLLER, data.limb2_angle)
@@ -40,11 +40,11 @@ while true do
 
 	-- Waits until the ring bearing has moved
 	modem.transmit(channels.LIMB_RING_BEARING, channels.CONTROLLER, data.center_pivot)
-	poll(channels.CONTROLLER, 1)
+	network.poll(channels.CONTROLLER, 1)
 
 	-- Waits until limb 1 has moved
 	modem.transmit(channels.LIMB_1, channels.CONTROLLER, data.limb1_angle)
-	poll(channels.CONTROLLER, 1)
+	network.poll(channels.CONTROLLER, 1)
 
 	-- Waits until limb 2 has moved
 	modem.transmit(channels.LIMB_2, channels.CONTROLLER, data.limb2_angle)

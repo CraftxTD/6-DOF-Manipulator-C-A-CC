@@ -16,7 +16,7 @@ local redstone_relay = "bottom"
 local data
 
 while true do
-	data = network.poll(channels.controller, 1)
+	data = network.poll(channels.CONTROLLER, 1)
 	gearshift.rotate(data.angle, data.dir)
 
 	while gearshift.isRunning() do

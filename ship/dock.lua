@@ -17,7 +17,7 @@ local y = -1 + geometry.DOCK_Y
 local z = 0 + geometry.DOCK_Z
 
 -- Approximate distance between dock and ship. Used to filter other different ships.
-local dock_to_pivot = 6
+local dock_to_pivot = 12
 
 for _, name in ipairs(peripheral.getNames()) do
 	print(string.format("Found peripheral %s to the %s..", peripheral.getType(name), name))
