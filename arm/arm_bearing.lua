@@ -1,3 +1,5 @@
+package.path = package.path .. ";/?.lua"
+
 -- This is used to control the rotation of the ring, limb 1 and limb 2 bearings.
 local channels = require("protocols.channels")
 local network = require("protocols.network")

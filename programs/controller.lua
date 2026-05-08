@@ -1,3 +1,4 @@
+package.path = package.path .. ";/?.lua"
 local channels = require("protocols.channels")
 local network = require("protocols.network")
 local calculate = require("protocols.calculate")

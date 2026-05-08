@@ -1,3 +1,4 @@
+package.path = package.path .. ";/?.lua"
 -- Gets position of the dock and sends it to the calculator
 local channels = require("protocols.channels")
 local network = require("protocols.network")

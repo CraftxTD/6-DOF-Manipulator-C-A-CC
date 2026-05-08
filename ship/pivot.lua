@@ -1,3 +1,4 @@
+package.path = package.path .. ";/?.lua"
 local channels = require("protocols.channels")
 local network = require("protocols.network")
 local modem = peripheral.find("modem") or error("No modem", 0)

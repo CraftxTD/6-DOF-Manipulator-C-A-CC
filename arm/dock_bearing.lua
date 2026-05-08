@@ -1,3 +1,4 @@
+package.path = package.path .. ";/?.lua"
 -- This is used to control the rotation of the dock bearings and to detect if it is docked.
 local channels = require("protocols.channels")
 local network = require("protocols.network")
