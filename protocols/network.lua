@@ -33,4 +33,30 @@ function network.poll_redstone(side, signal_strength, time)
 	end
 end
 
+-- Signal strength has a maximum value of 14
+-- Checks for redstone at every side of the computer
+-- and returns the side where there is redstone input.
+-- This assumes only one redstone input can be on at
+-- a given time.
+function network.poll_redstone_all(time)
+	signal_strength = math.min(signal_strength, 14)
+	-- Timer
+	local timer = os.startTimer(time)
+	local event, key
+	while true do
+		event, key = os.pullEvent()
+		if event == "redstone" then
+			for _, side in ipairs(redstone.getSides()) do
+				if redstone.getInput(side) then
+					print(string.format("Found redstone signal to the %s.. ", side))
+					return side
+				end
+			end
+		elseif event == "timer" and key == timer then
+			print(string.format("Polling %s seconds for redstone.. ", time))
+			timer = os.startTimer(time)
+		end
+	end
+end
+
 return network
