@@ -1,12 +1,15 @@
+-- NOTE: Link: wget https://raw.githubusercontent.com/CraftxTD/6-DOF-Manipulator-C-A-CC/refs/heads/main/startup.lua  /startup.lua
 local directories = {
-	arm = { "arm_bearing.lua", "dock_bearing.lua" },
 	programs = { "controller.lua" },
 	protocols = { "calculate.lua", "channels.lua", "geometry.lua", "network.lua" },
 	ship = { "dock.lua", "pivot.lua" },
 	test = { "test.lua" },
 }
+local root_files = {
+	"arm_bearing.lua",
+}
 
-local base = "https://raw.githubusercontent.com/CraftxTD/3-DOF-Manipulator-C-A-CC/refs/heads/main/"
+local base = "https://raw.githubusercontent.com/CraftxTD/6-DOF-Manipulator-C-A-CC/refs/heads/main/"
 
 for dir, files in pairs(directories) do
 	fs.makeDir(dir)
@@ -17,6 +20,14 @@ for dir, files in pairs(directories) do
 
 		shell.run("wget", base .. dir .. "/" .. file, dir .. "/" .. file)
 	end
+end
+
+for _, file in pairs(root_files) do
+	shell.run("rm", "/" .. file)
+
+	print("Downloading " .. file)
+
+	shell.run("wget", base .. "/" .. file, "/" .. file)
 end
 
 print("Successfully downloaded.")
