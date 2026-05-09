@@ -1,4 +1,4 @@
-# 6-DOF-Manipulator-C-A-CC
+# 4-DOF-Manipulator-C-A-CC
 This is a project that implements a 6 DOF Manipulator in Minecraft using **Create Aeronautics** and **CC: Tweaked**.
 
 ### Installation
