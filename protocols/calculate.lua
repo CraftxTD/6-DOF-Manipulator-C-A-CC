@@ -70,7 +70,7 @@ function calculate.angles(local_ship)
 	ship_z = local_ship.z1
 		- local_ship.offset_x * math.sin(ship_pivot_angle)
 		+ local_ship.offset_z * math.cos(ship_pivot_angle)
-	ship_y = local_ship.y1 - local_ship.offset_y
+	ship_y = local_ship.y1 + local_ship.offset_y
 
 	-- Arm to ship angles and magnitude (z is inverted)
 	-- Current arm is initially rotated by 90 degrees

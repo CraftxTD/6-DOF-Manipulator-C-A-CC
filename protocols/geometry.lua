@@ -7,7 +7,7 @@ return {
 	CENTER_Z = 423,
 	-- Sum of both arm lengths
 	-- Both arms must have the same radii
-	ARM_RADIUS = 30,
+	ARM_RADIUS = 28,
 	-- Max limit that a dock can rotate
 	DOCK_LIMIT = { 0, math.pi },
 	-- The arm angle relative to the xz plane.
@@ -15,7 +15,7 @@ return {
 	-- Offset of dock relative to the second limb's point.
 	-- These coordinates are then converted to the ship dock's
 	-- local coordinates.
-	DOCK_X = 1,
+	DOCK_X = 2,
 	DOCK_Y = 0,
 	DOCK_Z = 0,
 }
