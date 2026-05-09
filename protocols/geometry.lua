@@ -5,8 +5,9 @@ return {
 	CENTER_X = 465,
 	CENTER_Y = 116,
 	CENTER_Z = 423,
+	-- Sum of both arm lengths
 	-- Both arms must have the same radii
-	ARM_RADIUS = 15,
+	ARM_RADIUS = 30,
 	-- Max limit that a dock can rotate
 	DOCK_LIMIT = { 0, math.pi },
 	-- The arm angle relative to the xz plane.

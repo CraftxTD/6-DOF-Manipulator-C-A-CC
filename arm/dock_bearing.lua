@@ -23,7 +23,10 @@ while true do
 		sleep(0.1)
 	end
 
+	modem.transmit(channels.CONTROLLER, channels.CONTROLLER, _)
+
+	-- TODO: Move this to controller
 	-- Check if dock successfully
-	network.poll_redstone(redstone_relay, 15, 1)
-	modem.transmit()
+	-- network.poll_redstone(redstone_relay, 15, 1)
+	-- modem.transmit()
 end

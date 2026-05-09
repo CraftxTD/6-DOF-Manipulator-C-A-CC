@@ -12,13 +12,13 @@ end
 
 -- Get direction because gearshfits don't seem to support
 -- negative angles (returns a table)
--- In xz plane, 1 is towards x (clockwise), -1 is towards -x (anti-clockwise)
+-- In xz plane, 1 is towards -x (anti-clockwise), -1 is towards x (clockwise)
 -- Converts radians to degree
 local function deg_direction(theta)
 	if theta < 0 then
-		return { angle = math.deg(math.abs(theta) % (2 * math.pi)), dir = -1 }
+		return { angle = math.deg(math.abs(theta) % (2 * math.pi)), dir = 1 }
 	else
-		return { angle = math.deg(theta % (2 * math.pi)), dir = 1 }
+		return { angle = math.deg(theta % (2 * math.pi)), dir = -1 }
 	end
 end
 
@@ -82,23 +82,19 @@ function calculate.angles(local_ship)
 	-- If at quadrant 2, each joint arm angle is the reflection of their corresponding
 	-- angle at quadrant 1. This is done to prevent the arm from going underground.
 	limb1_angle = reference(v_angle) + math.acos(magnitude / geometry.ARM_RADIUS)
-	limb2_angle = reference(v_angle) - math.acos(magnitude / geometry.ARM_RADIUS)
+	limb2_angle = reference(v_angle) - math.acos(magnitude / geometry.ARM_RADIUS) - limb1_angle
 
 	-- Calculate center pivot angle and direction
 	center_pivot = deg_direction(geometry.INITIAL_ARM_ANGLE - h_angle)
 
 	-- Calculate dock pivot angle and direction.
 	-- The initial dock pivot angle is the same as the center pivot angle.
-	if center_pivot.dir == 1 then
-		dock_pivot = deg_direction(geometry.INITIAL_ARM_ANGLE + center_pivot.angle + ship_pivot_angle + math.pi)
-	else
-		dock_pivot = deg_direction(center_pivot.angle - geometry.INITIAL_ARM_ANGLE + ship_pivot_angle + math.pi)
-	end
+	dock_pivot = deg_direction(ship_pivot_angle - h_angle)
 
 	return {
 		v_angle = deg_direction(v_angle),
-		limb1_angle = deg_direction(limb1_angle),
-		limb2_angle = deg_direction(limb2_angle),
+		limb1_angle = deg_direction(-limb1_angle),
+		limb2_angle = deg_direction(-limb2_angle),
 		center_pivot = center_pivot,
 		dock_pivot = dock_pivot,
 	}
