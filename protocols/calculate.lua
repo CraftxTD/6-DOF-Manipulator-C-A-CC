@@ -52,25 +52,7 @@ function calculate.filter_ship(position, dock_to_pivot)
 	end
 end
 
--- NOTE: EXPECTED:
--- before offset:
--- x: 475.39
--- y: 123.19
--- z: 417.08
--- after offset:
--- x: 472.01
--- y: 127.92
--- z: 419.72
--- NOTE: OBSERVED:
--- before offset:
--- x: 475.43
--- y: 123.41
--- z: 416.63
--- after offset:
--- x: 472.36
--- y: 118.41
--- z: 414.07
--- FIXIT: Y is inverted, Z is wrong direction
+-- FIXIT: Figure out a way to take care of dock rotation
 
 function calculate.angles(local_ship)
 	-- Angles are in radians. The arm dock pivot angle is assumed to always be at 0,
@@ -86,7 +68,7 @@ function calculate.angles(local_ship)
 		+ local_ship.offset_x * math.cos(ship_pivot_angle)
 		- local_ship.offset_z * math.sin(ship_pivot_angle)
 	ship_z = local_ship.z1
-		+ local_ship.offset_x * math.sin(ship_pivot_angle)
+		- local_ship.offset_x * math.sin(ship_pivot_angle)
 		+ local_ship.offset_z * math.cos(ship_pivot_angle)
 	ship_y = local_ship.y1 - local_ship.offset_y
 
