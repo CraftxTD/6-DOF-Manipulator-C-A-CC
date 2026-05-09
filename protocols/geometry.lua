@@ -15,7 +15,7 @@ return {
 	-- Offset of dock relative to the second limb's point.
 	-- These coordinates are then converted to the ship dock's
 	-- local coordinates.
-	DOCK_X = 2,
-	DOCK_Y = -2,
+	DOCK_X = 1,
+	DOCK_Y = 0,
 	DOCK_Z = 0,
 }
