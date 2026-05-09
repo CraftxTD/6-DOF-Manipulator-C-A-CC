@@ -5,7 +5,6 @@ This is a project that implements a 6 DOF Manipulator in Minecraft using **Creat
 To download, copy the following commands into your Minecraft computer terminal: 
 
 ```bash
-```
 wget https://raw.githubusercontent.com/CraftxTD/6-DOF-Manipulator-C-A-CC/refs/heads/main/startup.lua  /startup.lua
 ```
 
