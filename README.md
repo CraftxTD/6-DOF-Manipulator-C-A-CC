@@ -3,4 +3,8 @@ This is a project that implements a 6 DOF Manipulator in Minecraft using Create 
 
 To download, copy the following commands into your computer terminal: 
 
-pastebin run 16h8zx3D
+wget https://raw.githubusercontent.com/CraftxTD/6-DOF-Manipulator-C-A-CC/refs/heads/main/startup.lua  /startup.lua
+
+then run the following script in the root directory:
+
+startup
