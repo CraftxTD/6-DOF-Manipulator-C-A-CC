@@ -1,6 +1,10 @@
 -- Calculator helper functions
 local geometry = require("protocols.geometry")
+local matrix = require("libs.matrix")
 local calculate = {}
+-- Ship angles
+local Rz, Ry, Rx
+local dock_offset
 
 local function quadrant(a, b)
 	local angle = math.atan2(b, a)
@@ -8,6 +12,21 @@ local function quadrant(a, b)
 		angle = angle + 2 * math.pi
 	end
 	return angle
+end
+
+-- Calculate the rotation matrix based off the offsets
+-- Takes block vector offset as value (distance of block from master computer)
+local function get_offset(block_offset, type)
+	local offset_vector
+	if type == 1 then
+		offset_vector = dock_offset - block_offset
+	elseif type == 2 then
+		offset_vector = block_offset
+	end
+	-- Convetion ZYX
+	local rotation_product = matrix.mul(Rz, matrix.mul(Ry, Rx))
+	offset_vector = matrix.mul(rotation_product, offset_vector)
+	return offset_vector
 end
 
 -- Get direction because gearshfits don't seem to support
@@ -50,6 +69,91 @@ function calculate.filter_ship(position, dock_to_pivot)
 	else
 		return true
 	end
+end
+
+-- Calculates the distance and angle of the dock relative to the center of the arm
+-- Uses the raw values and produces the dock vector
+function calculate.process(raw)
+	dock_offset = raw.dock_offset
+
+	-- Convert every raw value except gimbals into rad
+	for _, degree in raw do
+		if type(degree) == "number" then
+			degree = math.rad(degree)
+		end
+	end
+
+	-- Initialize base coordinates
+	local zy, xy
+	if raw.zy > math.pi / 2 then
+		zy = (3 * math.pi) / 4 - raw.zy
+	else
+		zy = raw.zy
+	end
+
+	if raw.xy > math.pi / 2 then
+		xy = (3 * math.pi) / 4 - raw.xy
+	else
+		xy = raw.xy
+	end
+
+	-- We invert x and z from the gimbal so that it follows the axis of the global coordinates.
+	local ship_zx, ship_zy, ship_zx
+	ship_xy = math.rad(-raw.gimbal.getAngles()[2])
+	ship_zy = math.rad(raw.gimbal.getAngles()[1])
+	-- North angle is
+	ship_zx = 2 * math.pi - (math.pi + raw.north)
+
+	-- Initialize the rotation matrices
+	Rz = matrix.new({
+		{
+			{ math.cos(ship_xy), -math.sin(ship_xy), 0 },
+			{ math.sin(ship_xy), math.cos(ship_xy), 0 },
+			{ 0, 0, 1 },
+		},
+	})
+	Rx = matrix.new({
+		{
+			{ 1, 0, 0 },
+			{ 0, -math.cos(ship_zy), math.sin(ship_zy) },
+			{ 0, math.sin(ship_zy), math.cos(ship_zy) },
+		},
+	})
+	Ry = matrix.new({
+		{
+			{ math.cos(ship_zx), 0, -math.sin(ship_zx) },
+			{ 0, 1, 0 },
+			{
+				-math.sin(ship_zx),
+				0,
+				-math.cos(ship_zx),
+			},
+		},
+	})
+
+	local height_vector, x, z, y
+	height_vector = vector.new(0, raw.altitude - geometry.LODESTONE_Y, 0)
+	-- Vector ZY's z value
+	z = (get_offset(geometry.BLOCK_OFFSETS.ZY - geometry.BLOCK_OFFSETS.ALTITUDE, 2) + height_vector).y / math.tan(zy)
+	-- Vector XY's x value
+	x = (get_offset(geometry.BLOCK_OFFSETS.XY - geometry.BLOCK_OFFSETS.ALTITUDE, 2) + height_vector).y / math.tan(xy)
+
+	-- NOTE: Probably unnecessary to have navigation table for XZ plane
+	-- temp1 = get_offset(geometry.BLOCK_OFFSETS.ZX - geometry.BLOCK_OFFSETS.XY, 2) + vector_xy
+	-- temp2 = get_offset(geometry.BLOCK_OFFSETS.ZX - geometry.BLOCK_OFFSETS.ZY, 2) + vector_zy
+	-- vector_zx = vector.new(temp1.x, 0, temp2.z)
+
+	-- Find dock offset of x coordinate, then add that to x coordinate
+	x = get_offset(geometry.BLOCK_OFFSETS.XY, 1).x + x
+	-- Find dock offset of z coordinate, then add that to z coordinate
+	z = get_offset(geometry.BLOCK_OFFSETS.ZY, 1).z + z
+	-- Find dock offset of y coordinate, then use that for height coordinate
+	y = (get_offset(geometry.BLOCK_OFFSETS.ALTITUDE, 1) + height_vector).y
+
+	return {
+		dock_vector = vector.new(x + geometry.CENTER_X, y + geometry.CENTER_Y, z + geometry.CENTER_Z),
+		pivot_angle = ship_zx,
+	}
 end
 
 -- FIXIT: Figure out a way to take care of dock rotation

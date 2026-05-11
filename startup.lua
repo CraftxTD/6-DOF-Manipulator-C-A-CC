@@ -1,8 +1,9 @@
 -- NOTE: Link: wget https://raw.githubusercontent.com/CraftxTD/6-DOF-Manipulator-C-A-CC/refs/heads/main/startup.lua  /startup.lua
 local directories = {
 	programs = { "controller.lua", "gyro.lua" },
+	libs = { "complex.lua", "matrix.lua" },
 	protocols = { "calculate.lua", "channels.lua", "geometry.lua", "network.lua" },
-	ship = { "dock.lua", "pivot.lua" },
+	ship = { "master.lua", "slave1.lua", "slave2.lua" },
 	test = { "test.lua" },
 }
 local root_files = {

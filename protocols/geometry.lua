@@ -5,6 +5,8 @@ return {
 	CENTER_X = 465,
 	CENTER_Y = 116,
 	CENTER_Z = 423,
+	-- LODESTONE OFFSET
+	LODESTONE_Y = 109,
 	-- Sum of both arm lengths
 	-- Both arms must have the same radii
 	ARM_RADIUS = 28,
@@ -18,4 +20,15 @@ return {
 	DOCK_X = 2,
 	DOCK_Y = 0,
 	DOCK_Z = 0,
+
+	-- Ship peripheral offset values
+	-- z is pointing towards the inverted direction
+	-- DO NOT CHANGE UNLESS YOU KNOW WHAT YOU'RE DOING
+
+	BLOCK_OFFSETS = {
+		ZY = vector.new(1, 0, 0),
+		XY = vector.new(-1, 0, 0),
+		ZX = vector.new(1, 0, -1),
+		ALTITUDE = vector.new(-1, 0, -2),
+	},
 }
