@@ -106,28 +106,22 @@ function calculate.process(raw)
 
 	-- Initialize the rotation matrices
 	Rz = matrix.new({
-		{
-			{ math.cos(ship_xy), -math.sin(ship_xy), 0 },
-			{ math.sin(ship_xy), math.cos(ship_xy), 0 },
-			{ 0, 0, 1 },
-		},
+		{ math.cos(ship_xy), -math.sin(ship_xy), 0 },
+		{ math.sin(ship_xy), math.cos(ship_xy), 0 },
+		{ 0, 0, 1 },
 	})
 	Rx = matrix.new({
-		{
-			{ 1, 0, 0 },
-			{ 0, -math.cos(ship_zy), math.sin(ship_zy) },
-			{ 0, math.sin(ship_zy), math.cos(ship_zy) },
-		},
+		{ 1, 0, 0 },
+		{ 0, -math.cos(ship_zy), math.sin(ship_zy) },
+		{ 0, math.sin(ship_zy), math.cos(ship_zy) },
 	})
 	Ry = matrix.new({
+		{ math.cos(ship_zx), 0, -math.sin(ship_zx) },
+		{ 0, 1, 0 },
 		{
-			{ math.cos(ship_zx), 0, -math.sin(ship_zx) },
-			{ 0, 1, 0 },
-			{
-				-math.sin(ship_zx),
-				0,
-				-math.cos(ship_zx),
-			},
+			-math.sin(ship_zx),
+			0,
+			-math.cos(ship_zx),
 		},
 	})
 
