@@ -16,17 +16,20 @@ end
 
 -- Calculate the rotation matrix based off the offsets
 -- Takes block vector offset as value (distance of block from master computer)
+-- Takes a vector object, converts into matrix form, then returns vector object.
 local function get_offset(block_offset, type)
 	local offset_vector
+	local type2 = dock_offset - block_offset
 	if type == 1 then
-		offset_vector = dock_offset - block_offset
+		-- offset_vector = dock_offset - block_offset
+		offset_vector = matrix:new({ { type2.x }, { type2.y }, { type2.z } })
 	elseif type == 2 then
-		offset_vector = block_offset
+		offset_vector = matrix:new({ { block_offset.x }, { block_offset.y }, { block_offset.z } })
 	end
 	-- Convetion ZYX
 	local rotation_product = matrix.mul(Rz, matrix.mul(Ry, Rx))
 	offset_vector = matrix.mul(rotation_product, offset_vector)
-	return offset_vector
+	return vector.new(offset_vector[1][1], offset_vector[2][1], offset_vector[3][1])
 end
 
 -- Get direction because gearshfits don't seem to support
@@ -124,6 +127,10 @@ function calculate.process(raw)
 			-math.cos(ship_zx),
 		},
 	})
+
+	matrix.print(Rx)
+	matrix.print(Ry)
+	matrix.print(Rz)
 
 	local height_vector, x, z, y
 	height_vector = vector.new(0, raw.altitude - geometry.LODESTONE_Y, 0)
