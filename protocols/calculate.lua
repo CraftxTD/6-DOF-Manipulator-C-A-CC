@@ -77,7 +77,7 @@ function calculate.process(raw)
 	dock_offset = raw.dock_offset
 
 	-- Convert every raw value except gimbals into rad
-	for _, degree in raw do
+	for _, degree in ipairs(raw) do
 		if type(degree) == "number" then
 			degree = math.rad(degree)
 		end
@@ -99,8 +99,8 @@ function calculate.process(raw)
 
 	-- We invert x and z from the gimbal so that it follows the axis of the global coordinates.
 	local ship_zx, ship_zy, ship_zx
-	ship_xy = math.rad(-raw.gimbal.getAngles()[2])
-	ship_zy = math.rad(raw.gimbal.getAngles()[1])
+	ship_xy = math.rad(-raw.gimbal[2])
+	ship_zy = math.rad(raw.gimbal[1])
 	-- North angle is
 	ship_zx = 2 * math.pi - (math.pi + raw.north)
 

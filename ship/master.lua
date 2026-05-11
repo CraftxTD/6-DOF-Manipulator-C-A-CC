@@ -27,23 +27,14 @@ local relay_lever = "bottom"
 -- comparator value from the dock connector.
 local relay_check_dock = "right"
 
-local data = {
-	xy = peripheral.wrap("left").getRelativeAngle(),
-	north = slave1.north,
-	zx = slave1.zx,
-	altitude = slave2.altitude,
-	gimbal = slave2.gimbal,
-	dock_offset = dock_offset,
-}
-
 while true do
 	-- Check if docked
 	if redstone.getInput(relay_lever) then
 		print("Not in docking mode.. (redstone off)")
 		sleep(1)
 	else
-		slave1 = network.poll(channels.SHIP_SLAVE1)
-		slave2 = network.poll(channels.SHIP_SLAVE2)
+		slave1 = network.poll(channels.SHIP_SLAVE1, 1)
+		slave2 = network.poll(channels.SHIP_SLAVE2, 1)
 		local raw = {
 			xy = peripheral.wrap("left").getRelativeAngle(),
 			north = slave1.north,
