@@ -23,8 +23,6 @@ return {
 
 	-- Ship peripheral offset values
 	-- z is pointing towards the inverted direction
-	-- DO NOT CHANGE UNLESS YOU KNOW WHAT YOU'RE DOING
-
 	BLOCK_OFFSETS = {
 		ZY = vector.new(1, 0, -1),
 		XY = vector.new(-1, 0, 0),

@@ -29,7 +29,7 @@ end
 local function invert_rotate(vector)
 	local rotated_vector = matrix:new({ { vector.x }, { vector.y }, { vector.z } })
 	-- Convention ZXY with negative angles
-	local rotation_order = matrix.mul(Rz, matrix.mul(Rx, Ry))
+	local rotation_order = matrix.mul(invert_Rz, matrix.mul(invert_Rx, invert_Ry))
 	rotated_vector = matrix.mul(rotation_order, rotated_vector)
 	return vector.new(rotated_vector[1][1], rotated_vector[2][1], rotated_vector[3][1])
 end
