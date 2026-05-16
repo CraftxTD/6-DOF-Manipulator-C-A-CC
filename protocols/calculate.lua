@@ -14,6 +14,26 @@ local function quadrant(a, b)
 	return angle
 end
 
+-- NOTE: Cross product strategy
+-- Finds the cross product using matrix lib given vector parameters
+-- local function cross(a, b)
+--	local v_a = matrix:new({ { a.x }, { a.y }, { a.z } })
+--	local v_b = matrix:new({ { b.x }, { b.y }, { b.z } })
+--	local product = matrix.cross(v_a, v_b)
+--	return vector.new(product[1][1], product[2][1], product[3][1])
+-- end
+
+-- Finds the yaw given the gimbal angles and the yaw vector
+-- (the local vector of the combined angles of all 3 magnet
+-- navigation tables)
+local function get_yaw(yaw_vector)
+	local rotated_vector = matrix:new({ { yaw_vector.x }, { yaw_vector.y }, { yaw_vector.z } })
+	-- Rotate by X, then by Z
+	local rotation_order = matrix.mul(invert_Rx, invert_Ry)
+	rotated_vector = matrix.mul(rotation_order, rotated_vector)
+	return vector.new(rotated_vector[1][1], rotated_vector[2][1], rotated_vector[3][1])
+end
+
 -- Calculate the rotation matrix based off the offsets
 -- Takes block vector offset as value (distance of block from master computer)
 -- Takes a vector object, converts into matrix form, then returns vector object.
@@ -26,8 +46,8 @@ local function get_offset(block_offset)
 end
 
 -- Inverts the rotation back
-local function invert_rotate(vector)
-	local rotated_vector = matrix:new({ { vector.x }, { vector.y }, { vector.z } })
+local function invert_rotate(angle_vector)
+	local rotated_vector = matrix:new({ { angle_vector.x }, { angle_vector.y }, { angle_vector.z } })
 	-- Convention ZXY with negative angles
 	local rotation_order = matrix.mul(invert_Rz, matrix.mul(invert_Rx, invert_Ry))
 	rotated_vector = matrix.mul(rotation_order, rotated_vector)
@@ -99,11 +119,19 @@ function calculate.process(raw)
 	end
 
 	-- Gimbal, xy is flipped
-	local ship_zx, ship_zy, ship_zx
+	local ship_xy, ship_zy, ship_xz, yaw_vector
 	ship_xy = -math.rad(raw.gimbal[2])
 	ship_zy = math.rad(raw.gimbal[1])
-	-- North angle is
-	ship_zx = 2 * math.pi - raw.north
+	yaw_vector = vector.new(
+		(math.cos(math.rad(2 * math.pi - raw.north_xz))) + (math.cos(math.rad(2 * math.pi - raw.north_xy))),
+		(math.sin(math.rad(2 * math.pi - raw.north_xy))) + (math.sin(math.rad(2 * math.pi - raw.north_zy))),
+		(-math.sin(math.rad(2 * math.pi - raw.north_xz))) + (-math.cos(math.rad(2 * math.pi - raw.north_zy)))
+	)
+
+	-- NOTE: Cross product strategy
+	-- ship_xz = 2 * math.pi - raw.north
+	-- north_table = vector.new(math.cos(raw.north), 0, -math.sin(raw.north))
+	-- normal = vector.new(0, 1, 0)
 
 	-- Initialize the rotation matrices and their inverse rotations
 	Rz = matrix:new({
@@ -116,10 +144,13 @@ function calculate.process(raw)
 		{ 0, math.cos(ship_zy), -math.sin(ship_zy) },
 		{ 0, math.sin(ship_zy), math.cos(ship_zy) },
 	})
+
+	ship_xz = get_yaw(yaw_vector)
+	ship_xz = math.atan2(ship_xz.y, ship_xz.x)
 	Ry = matrix:new({
-		{ math.cos(ship_zx), 0, math.sin(ship_zx) },
+		{ math.cos(ship_xz), 0, -math.sin(ship_xz) },
 		{ 0, 1, 0 },
-		{ -math.sin(ship_zx), 0, math.cos(ship_zx) },
+		{ -math.sin(ship_xz), 0, -math.cos(ship_xz) },
 	})
 	invert_Rz = matrix:new({
 		{ math.cos(-ship_xy), -math.sin(-ship_xy), 0 },
@@ -132,9 +163,9 @@ function calculate.process(raw)
 		{ 0, math.sin(-ship_zy), math.cos(-ship_zy) },
 	})
 	invert_Ry = matrix:new({
-		{ math.cos(-ship_zx), 0, math.sin(-ship_zx) },
+		{ math.cos(-ship_xz), 0, math.sin(-ship_xz) },
 		{ 0, 1, 0 },
-		{ -math.sin(-ship_zx), 0, math.cos(-ship_zx) },
+		{ -math.sin(-ship_xz), 0, math.cos(-ship_xz) },
 	})
 
 	-- TODO: Rotate the xz vector too
@@ -147,6 +178,7 @@ function calculate.process(raw)
 	x_deg = math.atan2(xy_vector.y, xy_vector.x)
 
 	height_vector = vector.new(0, raw.altitude - geometry.LODESTONE_Y, 0)
+	print(string.format("z_deg: %f, x_deg: %f", z_deg, x_deg))
 	-- Vector ZY's z value
 	print(
 		string.format(
@@ -176,7 +208,7 @@ function calculate.process(raw)
 
 	return {
 		dock_vector = vector.new(x + geometry.CENTER_X, y, z + geometry.CENTER_Z),
-		pivot_angle = ship_zx,
+		pivot_angle = ship_xz,
 	}
 end
 
